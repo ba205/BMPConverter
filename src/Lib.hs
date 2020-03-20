@@ -14,10 +14,7 @@ toNegativeChar c
 
 bmpToNegative :: FilePath -> IO ()
 bmpToNegative filename = do
-    Right bmp  <- readBMP ("bmp/" ++ filename)
-    let rgba   =  unpackBMPToRGBA32 bmp
-    let (width, height) = bmpDimensions bmp
-    let rgbaNegative = B.map toNegativeChar rgba
-    let newBMP = packRGBA32ToBMP24 width height rgbaNegative
-    let output = takeWhile (\x -> x /= '.') filename
-    writeBMP ("bmp/ " ++ output ++ "Negative.BMP") newBMP
+  bmp <- B.readFile ("bmp/" ++ filename)
+  let bmpNegative = B.map toNegativeChar (B.drop 50 bmp)
+  let output = takeWhile (\x -> x /= '.') filename
+  B.writeFile ("bmp/ " ++ output ++ "Negative.BMP") (B.append (B.take 50 bmp) bmpNegative)
